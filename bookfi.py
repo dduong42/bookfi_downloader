@@ -41,25 +41,32 @@ def choose_answer(results):
 	while True:
 		try:
 			i = int(raw_input('Your choice: '))
-		except KeyboardInterrupt:
-			sys.exit(0)
+		except (KeyboardInterrupt, EOFError):
+			return None
+		except ValueError:
+			print 'Bad choice'
+			continue
 		if i >= 0 and i < len(results):
 			return results[i]['url']
 		else:
 			print 'Bad choice'
+	return None
 
 if __name__ == '__main__':
 	doctest.testmod()
 	while True:
 		try:
 			query = raw_input('Search: ')
-		except KeyboardInterrupt:
-			break
+		except (KeyboardInterrupt, EOFError):
+			print "\n"
+			sys.exit(0)
 		search_url = generate_search_url(query)
 		results = get_results(search_url)
 		if results:
 			choice = choose_answer(results)
-			url_download = get_location(choice)
-			download(url_download)
+			if choice:
+				url_download = get_location(choice)
+				download(url_download)
+			print "\n"
 		else:
 			print 'Not found'
