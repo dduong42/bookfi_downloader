@@ -6,7 +6,6 @@ import sys
 from parser import BookfiParser
 from url import *
 
-USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:28.0) Gecko/20100101 Firefox/28.0'
 URL_PREFIX = 'http://en.bookfi.org/s/?q='
 
 def generate_search_url(query):
@@ -34,18 +33,18 @@ def download(url_download):
 	md5 = get_location(url_download)
 	os.system('wget "%s" --referer="%s"' % (url_download, md5))
 
-def choose_answer(l):
+def choose_answer(results):
 	"""Demande a l'utilisateur de choisir dans une liste"""
 
-	for index, el in enumerate(l):
-		print "[%d] %s" % (index, el)
+	for index, el in enumerate(results):
+		print "[%d] %s - %s" % (index, el['title'], el['author'])
 	while True:
 		try:
 			i = int(raw_input('Your choice: '))
 		except KeyboardInterrupt:
 			sys.exit(0)
-		if i >= 0 and i < len(l):
-			return l([i])
+		if i >= 0 and i < len(results):
+			return results[i]['url']
 		else:
 			print 'Bad choice'
 

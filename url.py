@@ -4,6 +4,8 @@ import urllib2
 import re
 import httplib
 
+USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.9; rv:28.0) Gecko/20100101 Firefox/28.0'
+
 def get_host_n_path(url):
 	"""Retourne un couple (host, path) a partir d'une url
 

@@ -23,15 +23,23 @@ class BookfiParser(HTMLParser):
 	def __init__(self):
 		HTMLParser.__init__(self)
 		self.in_exact_match = False
+		self.in_title = False
+		self.in_author = False
 		self.div_count = 0
-		self.list_urls = []
+		self.title = ""
+		self.author = ""
+		self.url = ""
+		self.results = []
 
 	def get_results(self, html):
-		"""Renvoie les urls des resultats"""
+		"""Renvoie les resultats"""
 
-		self.list_urls = []
+		self.title = ""
+		self.author = ""
+		self.url = ""
+		self.results = []
 		self.feed(html)
-		return self.list_urls
+		return self.results
 
 	def handle_starttag(self, tag, attrs):
 		if ('class', 'resItemBox exactMatch') in attrs:
@@ -39,10 +47,25 @@ class BookfiParser(HTMLParser):
 
 		else:
 			if self.in_exact_match:
-				if tag == 'a' and ('title', 'Electronic library download book  ') in attrs:
-					self.list_urls.append(get_href(attrs))
+				if tag == 'a':
+					if ('title', 'Electronic library download book  ') in attrs:
+						self.url = get_href(attrs)
+						el = {'title': self.title, 'author': self.author, 'url': self.url}
+						self.results.append(el)
+					elif ('title', "Find all the author's book") in attrs:
+						self.in_author = True
+				elif tag == 'a':
+					print attrs
 				elif tag == 'div':
 					self.div_count += 1
+				elif tag == 'h3':
+					self.in_title = True
+
+	def handle_data(self, data):
+		if self.in_title:
+			self.title = data
+		elif self.in_author:
+			self.author = data
 
 	def handle_endtag(self, tag):
 		if self.in_exact_match and tag == 'div':
@@ -50,6 +73,10 @@ class BookfiParser(HTMLParser):
 				self.in_exact_match = False
 			else:
 				self.div_count -= 1
+		elif self.in_title and tag == 'h3':
+			self.in_title = False
+		elif self.in_author and tag == 'a':
+			self.in_author = False
 
 if __name__ == '__main__':
 	doctest.testmod()
