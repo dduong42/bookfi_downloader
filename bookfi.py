@@ -7,20 +7,13 @@ from parser import BookfiParser
 from url import *
 
 URL_PREFIX = 'http://en.bookfi.org/s/?q='
+URL_BOOKSEE = 'http://en.booksee.org/s/?q='
 
 def generate_search_url(query):
-	"""Retourne l'url de recherche sur bookfi a partir d'une requete.
-
-	>>> generate_search_url("coucou toi")
-	'http://en.bookfi.org/s/?q=coucou+toi'
-	>>> generate_search_url("test 2")
-	'http://en.bookfi.org/s/?q=test+2'
-	>>> generate_search_url("dernier test")
-	'http://en.bookfi.org/s/?q=dernier+test'
-	"""
+	"""Retourne l'url de recherche sur booksee a partir d'une requete."""
 
 	l = query.split()
-	return URL_PREFIX + '+'.join(l)
+	return URL_BOOKSEE + '+'.join(l)
 
 def get_results(url_query):
 	"""Retourne la liste des urls des resultats d'une recherche"""
